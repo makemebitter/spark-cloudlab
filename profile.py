@@ -15,6 +15,10 @@ DISK_IMG = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU18-64-STD'
 # Create a portal object,
 pc = portal.Context()
 
+pc.defineParameter("slaveCount", "Number of slave nodes",
+                   portal.ParameterType.INTEGER, 1)
+params = pc.bindParameters()
+
 
 def create_request(request, role, ip, worker_num=None):
     if role == 'm':
@@ -35,8 +39,6 @@ def create_request(request, role, ip, worker_num=None):
 # Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
 
-worker_num = 2
-
 # Link link-0
 link_0 = request.LAN('link-0')
 link_0.Site('undefined')
@@ -46,7 +48,7 @@ iface = create_request(request, 'm', '10.10.1.1')
 link_0.addInterface(iface)
 
 # Slave Nodes
-for i in range(worker_num):
+for i in range(params.slaveCount):
     iface = create_request(
         request, 's', '10.10.1.{}'.format(i + 2), worker_num=i)
     link_0.addInterface(iface)
