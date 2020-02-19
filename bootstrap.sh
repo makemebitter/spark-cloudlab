@@ -1,8 +1,8 @@
 #!/bin/bash
 
 set -e
-sudo apt update;
-sudo apt install -y openjdk-11-jre-headless scala openssh-server openssh-client syslinux-utils python3-pip;
+sudo apt-get update;
+sudo apt-get install -y openjdk-11-jre-headless scala openssh-server openssh-client syslinux-utils python3-pip;
 wget https://archive.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz;
 tar xvf spark-2.4.4-bin-hadoop2.7.tgz;
 sudo mv spark-2.4.4-bin-hadoop2.7 /usr/local/spark;
