@@ -12,7 +12,7 @@ source ~/.bashrc;
 sudo cp /usr/local/spark/conf/spark-env.sh.template /usr/local/spark/conf/spark-env.sh;
 sudo cp /usr/local/spark/conf/slaves.template /usr/local/spark/conf/slaves;
 
-pip3 install pyspark==2.4.4;
+pip3 install -r requirements.txt;
 
 ips=($(ip -4 addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}'))
 for ip in "${ips[@]}"
@@ -28,6 +28,8 @@ echo "export SPARK_LOCAL_IP=$LOCAL_IP" | sudo tee -a /usr/local/spark/conf/spark
 echo "export PYSPARK_PYTHON=python3.6" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
 
 echo "worker-0" | sudo tee -a /usr/local/spark/conf/slaves;
+
+cp ~/.bashrc /local/.bashrc
 
 
 
