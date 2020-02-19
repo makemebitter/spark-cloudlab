@@ -55,7 +55,11 @@ sudo /usr/local/bin/jupyter nbextension enable collapsible_headings/main --syste
 sudo /usr/local/bin/jupyter nbextension enable freeze/main --system ;
 sudo /usr/local/bin/jupyter nbextension enable spellchecker/main --system ;
 
-
+# Jupyter password
+mkdir -p ~/.jupyter;
+HASHED_PASSWORD=$(python3.6 -c "from notebook.auth import passwd; print(passwd('$JUPYTER_PASSWORD'))");
+echo "c.NotebookApp.password = u'$HASHED_PASSWORD'" >~/.jupyter/jupyter_notebook_config.py;
+echo "c.NotebookApp.open_browser = False" >>~/.jupyter/jupyter_notebook_config.py;
 
 
 cp ~/._bashrc /local/.bashrc
@@ -66,13 +70,14 @@ if [ "$duty" = "m" ]; then
 	sudo nohup socat TCP-LISTEN:8081,fork TCP:${LOCAL_IP}:8080 > /dev/null 2>&1 &
 	sudo nohup socat TCP-LISTEN:4041,fork TCP:${LOCAL_IP}:4040 > /dev/null 2>&1 &
 	sudo nohup docker run --init -p 3000:3000 -v "/:/home/project:cached" theiaide/theia-python:next > /dev/null 2>&1 &
-	sudo nohup jupyter notebook --no-browser --ip 0.0.0.0 > /dev/null 2>&1 &
+	sudo nohup jupyter notebook --no-browser --allow-root --ip 0.0.0.0 --notebook-dir=/ > /dev/null 2>&1 &
 
 
 elif [ "$duty" = "s" ]; then
 	sudo bash /usr/local/spark/sbin/start-slave.sh $master_ip:7077
 	sudo nohup socat TCP-LISTEN:8082,fork TCP:${LOCAL_IP}:8081 > /dev/null 2>&1 &	
 fi
+echo "Bootstraping complete"
 
 
 

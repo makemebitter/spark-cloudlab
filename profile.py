@@ -27,6 +27,8 @@ pc.defineParameter("osNodeType", "Hardware Type",
                      If unset, when you instantiate the profile, the resulting
                      experiment may have machines of any available type
                      allocated.''')
+pc.defineParameter("jupyterPassword", "The password of jupyter notebook, default: root",
+                   portal.ParameterType.STRING, 'root')
 params = pc.bindParameters()
 
 
@@ -42,7 +44,7 @@ def create_request(request, role, ip, worker_num=None):
     req.disk_image = DISK_IMG
     req.addService(pg.Execute(
         'sh',
-        'sudo -H bash /local/repository/bootstrap.sh {} > /local/logs/setup.log 2>/local/logs/error.log'.format(role)))
+        'sudo -H bash /local/repository/bootstrap.sh {} {}> /local/logs/setup.log 2>/local/logs/error.log'.format(role, params.jupyterPassword)))
     iface = req.addInterface(
         'eth9', pg.IPv4Address(ip, '255.255.255.0'))
     return iface
