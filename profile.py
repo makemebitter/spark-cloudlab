@@ -13,7 +13,8 @@ request = pc.makeRequestRSpec()
 node = request.RawPC("node")
 
 # Install and execute a script that is contained in the repository.
-node.addService(pg.Execute(shell="sh", command="/local/repository/silly.sh"))
+node.addService(pg.Execute(
+    shell="sh", command="cd /local/repository; sudo bash bootstrap.sh"))
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec(request)

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+duty=${1}
 set -e
 sudo apt-get update;
 sudo apt-get install -y openjdk-11-jre-headless scala openssh-server openssh-client syslinux-utils python3-pip;
@@ -27,9 +27,17 @@ echo "export SPARK_MASTER_HOST=$master_ip" | sudo tee -a /usr/local/spark/conf/s
 echo "export SPARK_LOCAL_IP=$LOCAL_IP" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
 echo "export PYSPARK_PYTHON=python3.6" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
 
-echo "worker-0" | sudo tee -a /usr/local/spark/conf/slaves;
+# echo "worker-0" | sudo tee /usr/local/spark/conf/slaves;
 
 cp ~/.bashrc /local/.bashrc
+
+if [ "$duty" = "m" ]; then
+	sudo bash /usr/local/spark/sbin/start-master.sh
+elif [ "$duty" = "s" ]; then
+	sudo bash /usr/local/spark/sbin/start-slave.sh $master_ip:7077
+fi
+
+
 
 
 
