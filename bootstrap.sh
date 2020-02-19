@@ -14,6 +14,7 @@ sudo cp /usr/local/spark/conf/slaves.template /usr/local/spark/conf/slaves;
 
 pip3 install -r /local/setup/requirements.txt;
 
+# Spark ips configs
 ips=($(ip -4 addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}'))
 for ip in "${ips[@]}"
 do
@@ -23,31 +24,36 @@ do
     fi
 done
 
-# sudo /usr/local/bin/jupyter contrib nbextension install --system ;
-# sudo /usr/local/bin/jupyter nbextensions_configurator enable --system ;
-# sudo /usr/local/bin/jupyter nbextension enable code_prettify/code_prettify --system ;
-# sudo /usr/local/bin/jupyter nbextension enable execute_time/ExecuteTime --system ;
-# sudo /usr/local/bin/jupyter nbextension enable collapsible_headings/main --system ;
-# sudo /usr/local/bin/jupyter nbextension enable freeze/main --system ;
-# sudo /usr/local/bin/jupyter nbextension enable spellchecker/main --system ;
 
 master_ip=$(gethostip -d master);
 echo "export SPARK_MASTER_HOST=$master_ip" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
 echo "export SPARK_LOCAL_IP=$LOCAL_IP" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
 echo "export PYSPARK_PYTHON=python3.6" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
 
-# echo "worker-0" | sudo tee /usr/local/spark/conf/slaves;
+
+# Jupyter extension configs
+sudo /usr/local/bin/jupyter contrib nbextension install --system ;
+sudo /usr/local/bin/jupyter nbextensions_configurator enable --system ;
+sudo /usr/local/bin/jupyter nbextension enable code_prettify/code_prettify --system ;
+sudo /usr/local/bin/jupyter nbextension enable execute_time/ExecuteTime --system ;
+sudo /usr/local/bin/jupyter nbextension enable collapsible_headings/main --system ;
+sudo /usr/local/bin/jupyter nbextension enable freeze/main --system ;
+sudo /usr/local/bin/jupyter nbextension enable spellchecker/main --system ;
+
+
+
 
 cp ~/._bashrc /local/.bashrc
 
+# Running Spark deamons
 if [ "$duty" = "m" ]; then
 	sudo bash /usr/local/spark/sbin/start-master.sh
-	sudo nohup socat TCP-LISTEN:8081,fork TCP:127.0.0.1:8080 > /dev/null 2>&1 &
-	sudo nohup socat TCP-LISTEN:4041,fork TCP:127.0.0.1:4040 > /dev/null 2>&1 &
+	sudo nohup socat TCP-LISTEN:8081,fork TCP:${LOCAL_IP}:8080 > /dev/null 2>&1 &
+	sudo nohup socat TCP-LISTEN:4041,fork TCP:${LOCAL_IP}:4040 > /dev/null 2>&1 &
 
 elif [ "$duty" = "s" ]; then
 	sudo bash /usr/local/spark/sbin/start-slave.sh $master_ip:7077
-	sudo nohup socat TCP-LISTEN:8082,fork TCP:127.0.0.1:8081 > /dev/null 2>&1 &	
+	sudo nohup socat TCP-LISTEN:8082,fork TCP:${LOCAL_IP}:8081 > /dev/null 2>&1 &	
 fi
 
 
