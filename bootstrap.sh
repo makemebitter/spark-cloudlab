@@ -4,6 +4,21 @@ JUPYTER_PASSWORD=${2:-"root"}
 set -e
 sudo apt-get update;
 sudo apt-get install -y openjdk-11-jre-headless scala openssh-server openssh-client syslinux-utils python3-pip socat;
+# docker
+sudo apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+# spark
 wget https://archive.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop2.7.tgz;
 tar xvf spark-2.4.4-bin-hadoop2.7.tgz;
 sudo mv spark-2.4.4-bin-hadoop2.7 /usr/local/spark;
@@ -50,6 +65,9 @@ if [ "$duty" = "m" ]; then
 	sudo bash /usr/local/spark/sbin/start-master.sh
 	sudo nohup socat TCP-LISTEN:8081,fork TCP:${LOCAL_IP}:8080 > /dev/null 2>&1 &
 	sudo nohup socat TCP-LISTEN:4041,fork TCP:${LOCAL_IP}:4040 > /dev/null 2>&1 &
+	sudo nohup docker run --init -p 3000:3000 -v "/:/home/project:cached" theiaide/theia-python:next > /dev/null 2>&1 &
+	sudo nohup jupyter notebook --no-browser --ip 0.0.0.0 > /dev/null 2>&1 &
+
 
 elif [ "$duty" = "s" ]; then
 	sudo bash /usr/local/spark/sbin/start-slave.sh $master_ip:7077
