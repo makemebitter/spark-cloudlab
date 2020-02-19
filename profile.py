@@ -17,6 +17,16 @@ pc = portal.Context()
 
 pc.defineParameter("slaveCount", "Number of slave nodes",
                    portal.ParameterType.INTEGER, 1)
+pc.defineParameter("osNodeType", "Hardware Type",
+                   portal.ParameterType.NODETYPE, "",
+                   longDescription='''A specific hardware type to use for each
+                   node. Cloudlab clusters all have machines of specific types.
+                     When you set this field to a value that is a specific
+                     hardware type, you will only be able to instantiate this
+                     profile on clusters with machines of that type.
+                     If unset, when you instantiate the profile, the resulting
+                     experiment may have machines of any available type
+                     allocated.''')
 params = pc.bindParameters()
 
 
@@ -26,6 +36,8 @@ def create_request(request, role, ip, worker_num=None):
     elif role == 's':
         name = 'worker-{}'.format(worker_num)
     req = request.RawPC(name)
+    if params.osNodeType:
+        req.hardware_type = params.osNodeType
     req.routable_control_ip = True
     req.disk_image = DISK_IMG
     req.addService(pg.Execute(

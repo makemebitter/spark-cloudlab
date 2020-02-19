@@ -12,7 +12,7 @@ echo export SPARK_HOME="$PATH:/usr/local/spark" >> ~/._bashrc;
 sudo cp /usr/local/spark/conf/spark-env.sh.template /usr/local/spark/conf/spark-env.sh;
 sudo cp /usr/local/spark/conf/slaves.template /usr/local/spark/conf/slaves;
 
-pip3 install -r /local/setup/requirements.txt;
+pip3 install -r /local/repository/requirements.txt;
 
 # Spark ips configs
 ips=($(ip -4 addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}'))
