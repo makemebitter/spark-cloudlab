@@ -29,6 +29,8 @@ pc.defineParameter("osNodeType", "Hardware Type",
                      allocated.''')
 pc.defineParameter("jupyterPassword", "The password of jupyter notebook, default: root",
                    portal.ParameterType.STRING, 'root')
+pc.defineParameter("publicIPSlaves", "Request public IP addresses for the slaves or not",
+                   portal.ParameterType.BOOLEAN, True)
 params = pc.bindParameters()
 
 
@@ -40,7 +42,10 @@ def create_request(request, role, ip, worker_num=None):
     req = request.RawPC(name)
     if params.osNodeType:
         req.hardware_type = params.osNodeType
-    req.routable_control_ip = True
+    if role == 'm':
+        req.routable_control_ip = True
+    elif role == 's':
+        req.routable_control_ip = params.publicIPSlaves
     req.disk_image = DISK_IMG
     req.addService(pg.Execute(
         'sh',
@@ -68,20 +73,6 @@ for i in range(params.slaveCount):
     link_0.addInterface(iface)
 
 
-# node_worker_0 = request.RawPC('worker-0')
-# node_worker_0.routable_control_ip = True
-# node_worker_0.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU18-64-STD'
-# node_worker_0.addService(pg.Execute(
-#     '/bin/sh', 'sudo git clone https://github.com/makemebitter/spark-cloudlab.git /local/setup; sudo -H bash /local/setup/bootstrap.sh s > /local/logs/setup.log'))
-# iface0 = node_worker_0.addInterface('eth1')
-
-# # Node master
-# node_master = request.RawPC('master')
-# node_master.routable_control_ip = True
-# node_master.disk_image = 'urn:publicid:IDN+emulab.net+image+emulab-ops//UBUNTU18-64-STD'
-# node_master.addService(pg.Execute(
-#     '/bin/sh', 'sudo git clone https://github.com/makemebitter/spark-cloudlab.git /local/setup; sudo -H bash /local/setup/bootstrap.sh m > /local/logs/setup.log'))
-# iface1 = node_master.addInterface('eth1')
 
 
 # Print the generated rspec
