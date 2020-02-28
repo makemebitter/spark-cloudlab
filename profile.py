@@ -1,4 +1,4 @@
-"""spark standalone WIP"""
+"""Spark Standalone"""
 
 #
 # NOTE: This code was machine converted. An actual human would not
@@ -17,7 +17,17 @@ pc = portal.Context()
 
 pc.defineParameter("slaveCount", "Number of slave nodes",
                    portal.ParameterType.INTEGER, 1)
-pc.defineParameter("osNodeType", "Hardware Type",
+pc.defineParameter("osNodeTypeSlave", "Hardware Type for slaves",
+                   portal.ParameterType.NODETYPE, "",
+                   longDescription='''A specific hardware type to use for each
+                   node. Cloudlab clusters all have machines of specific types.
+                     When you set this field to a value that is a specific
+                     hardware type, you will only be able to instantiate this
+                     profile on clusters with machines of that type.
+                     If unset, when you instantiate the profile, the resulting
+                     experiment may have machines of any available type
+                     allocated.''')
+pc.defineParameter("osNodeTypeMaster", "Hardware Type for master",
                    portal.ParameterType.NODETYPE, "",
                    longDescription='''A specific hardware type to use for each
                    node. Cloudlab clusters all have machines of specific types.
@@ -40,12 +50,14 @@ def create_request(request, role, ip, worker_num=None):
     elif role == 's':
         name = 'worker-{}'.format(worker_num)
     req = request.RawPC(name)
-    if params.osNodeType:
-        req.hardware_type = params.osNodeType
     if role == 'm':
         req.routable_control_ip = True
+        if params.osNodeTypeMaster:
+            req.hardware_type = params.osNodeTypeMaster
     elif role == 's':
         req.routable_control_ip = params.publicIPSlaves
+        if params.osNodeTypeSlave:
+            req.hardware_type = params.osNodeTypeSlave
     req.disk_image = DISK_IMG
     req.addService(pg.Execute(
         'sh',
