@@ -55,7 +55,7 @@ echo "export HADOOP_PREFIX=$HADOOP_HOME" | sudo tee -a ~/.bashrc
 echo "export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin" | sudo tee -a ~/.bashrc
 source ~/.bashrc
 echo "export JAVA_HOME=$JAVA_HOME" | sudo tee -a $HADOOP_HOME/etc/hadoop/hadoop-env.sh
-cp /local/repository/core_site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
+cp /local/repository/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 
 
 # Spark ips configs
