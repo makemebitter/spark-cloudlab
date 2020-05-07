@@ -57,7 +57,7 @@ echo "export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin" | sudo tee -a ~/.bas
 source ~/.bashrc
 echo "export JAVA_HOME=$JAVA_HOME" | sudo tee -a $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 cp /local/repository/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
-
+cp /local/repository/yarn-site.xml /local/hadoop/etc/hadoop/yarn-site.xml
 
 # Spark ips configs
 ips=($(ip -4 addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}'))
