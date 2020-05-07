@@ -51,6 +51,7 @@ cp -r /mnt/hadoop-2.7.3/. $HADOOP_HOME/.
 
 sudo cp $HOST_LIST_PATH $HADOOP_HOME/etc/hadoop/slaves
 echo "master" | sudo tee $HADOOP_HOME/etc/hadoop/workers
+echo "export HADOOP_HOME=$HADOOP_HOME" | sudo tee -a ~/.bashrc
 echo "export HADOOP_PREFIX=$HADOOP_HOME" | sudo tee -a ~/.bashrc
 echo "export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin" | sudo tee -a ~/.bashrc
 source ~/.bashrc
