@@ -23,11 +23,11 @@ sudo add-apt-repository \
 sudo apt-get update
 sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 # spark
-wget https://archive.apache.org/dist/spark/spark-2.4.0/spark-2.4.0-bin-hadoop2.7.tgz;
-tar xvf spark-2.4.0-bin-hadoop2.7.tgz;
-sudo mv spark-2.4.0-bin-hadoop2.7 /usr/local/spark;
-echo export PATH="$PATH:/usr/local/spark/bin" > ~/._bashrc;
-echo export SPARK_HOME="$PATH:/usr/local/spark" >> ~/._bashrc;
+wget https://archive.apache.org/dist/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz;
+tar xvf spark-2.4.5-bin-hadoop2.7.tgz;
+sudo mv spark-2.4.5-bin-hadoop2.7 /usr/local/spark;
+echo export PATH="$PATH:/usr/local/spark/bin" > ~/.bashrc;
+echo export SPARK_HOME="$PATH:/usr/local/spark" >> ~/.bashrc;
 sudo cp /usr/local/spark/conf/spark-env.sh.template /usr/local/spark/conf/spark-env.sh;
 sudo cp /usr/local/spark/conf/slaves.template /usr/local/spark/conf/slaves;
 
@@ -58,7 +58,7 @@ source ~/.bashrc
 echo "export JAVA_HOME=$JAVA_HOME" | sudo tee -a $HADOOP_HOME/etc/hadoop/hadoop-env.sh
 cp /local/repository/core-site.xml $HADOOP_HOME/etc/hadoop/core-site.xml
 cp /local/repository/yarn-site.xml /local/hadoop/etc/hadoop/yarn-site.xml
-
+cp /local/repository/hdfs-site.xml /local/hadoop/etc/hadoop/hdfs-site.xml
 # Spark ips configs
 ips=($(ip -4 addr | grep -oP '(?<=inet\s)\d+(\.\d+){3}'))
 for ip in "${ips[@]}"
@@ -100,10 +100,11 @@ if [ "$duty" = "m" ]; then
 	sudo bash /usr/local/spark/sbin/start-master.sh
   $HADOOP_PREFIX/bin/hdfs namenode -format "spark_cluster"
   $HADOOP_PREFIX/sbin/hadoop-daemon.sh --script hdfs start namenode
-  $HADOOP_PREFIX/sbin/yarn-daemon.sh start resourcemanager
-  $HADOOP_PREFIX/sbin/yarn-daemons.sh start nodemanager
+  # $HADOOP_PREFIX/sbin/yarn-daemon.sh start resourcemanager
+  # $HADOOP_PREFIX/sbin/yarn-daemons.sh start nodemanager
 	sudo nohup socat TCP-LISTEN:8081,fork TCP:${LOCAL_IP}:8080 > /dev/null 2>&1 &
 	sudo nohup socat TCP-LISTEN:4041,fork TCP:${LOCAL_IP}:4040 > /dev/null 2>&1 &
+  sudo nohup socat TCP-LISTEN:8089,fork TCP:${LOCAL_IP}:8088 > /dev/null 2>&1 &
 	sudo nohup docker run --init -p 3000:3000 -v "/:/home/project:cached" theiaide/theia-python:next > /dev/null 2>&1 &
 	sudo nohup jupyter notebook --no-browser --allow-root --ip 0.0.0.0 --notebook-dir=/ > /dev/null 2>&1 &
 
