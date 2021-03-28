@@ -18,8 +18,8 @@ sudo python3.7 -m pip install --upgrade --force-reinstall setuptools
 sudo python3.7 -m pip install -r ./requirements.txt;
 
 HADOOP_HOME=/local/hadoop
-sudo mkdir -p HADOOP_HOME
-sudo chown -R $USER:$USER  HADOOP_HOME
+sudo mkdir -p $HADOOP_HOME
+sudo chown -R $USER:$USER $HADOOP_HOME
 HOST_LIST_PATH=/local/gphost_list
 JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 
