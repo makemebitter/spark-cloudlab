@@ -6,9 +6,8 @@ sudo apt-get update
 sudo apt-get install -y openjdk-8-jre-headless scala openssh-server openssh-client syslinux-utils python3-pip socat;
 wget https://archive.apache.org/dist/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz;
 tar xvf spark-2.4.5-bin-hadoop2.7.tgz;
-sudo mkdir -p /usr/local/spark
-sudo chown -R $USER:$USER  /usr/local/spark
-mv spark-2.4.5-bin-hadoop2.7/* /usr/local/spark/*;
+sudo mv spark-2.4.5-bin-hadoop2.7 /usr/local/spark;
+sudo chown -R $USER:$USER /usr/local/spark
 echo export PATH="$PATH:/usr/local/spark/bin" >> ~/.bashrc;
 echo export SPARK_HOME="/usr/local/spark" >> ~/.bashrc;
 cp /usr/local/spark/conf/spark-env.sh.template /usr/local/spark/conf/spark-env.sh;
