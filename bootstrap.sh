@@ -27,7 +27,7 @@ wget https://archive.apache.org/dist/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7
 tar xvf spark-2.4.5-bin-hadoop2.7.tgz;
 sudo mv spark-2.4.5-bin-hadoop2.7 /usr/local/spark;
 echo export PATH="$PATH:/usr/local/spark/bin" > ~/.bashrc;
-echo export SPARK_HOME="$PATH:/usr/local/spark" >> ~/.bashrc;
+echo export SPARK_HOME="/usr/local/spark" >> ~/.bashrc;
 sudo cp /usr/local/spark/conf/spark-env.sh.template /usr/local/spark/conf/spark-env.sh;
 sudo cp /usr/local/spark/conf/slaves.template /usr/local/spark/conf/slaves;
 
@@ -71,6 +71,7 @@ done
 
 
 master_ip=$(gethostip -d master);
+echo "export master_ip=$master_ip" | sudo tee -a ~/.bashrc
 echo "export SPARK_MASTER_HOST=$master_ip" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
 echo "export SPARK_LOCAL_IP=$LOCAL_IP" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
 echo "export PYSPARK_PYTHON=python3.6" | sudo tee -a /usr/local/spark/conf/spark-env.sh;
@@ -95,6 +96,7 @@ echo "c.NotebookApp.open_browser = False" >>~/.jupyter/jupyter_notebook_config.p
 
 cp ~/._bashrc /local/.bashrc
 cp ~/._bashrc /etc/profile.d/spark.sh
+source ~/.bashrc
 # Running Spark deamons
 if [ "$duty" = "m" ]; then
 	sudo bash /usr/local/spark/sbin/start-master.sh
