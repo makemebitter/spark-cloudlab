@@ -54,18 +54,18 @@ echo "export PYSPARK_PYTHON=python3.7" | sudo tee -a /usr/local/spark/conf/spark
 
 if [ "$duty" = "m" ]; then
 	bash /usr/local/spark/sbin/start-master.sh
-  $HADOOP_PREFIX/bin/hdfs namenode -format "spark_cluster"
-  $HADOOP_PREFIX/sbin/hadoop-daemon.sh --script hdfs start namenode
+    $HADOOP_PREFIX/bin/hdfs namenode -format "spark_cluster"
+    $HADOOP_PREFIX/sbin/hadoop-daemon.sh --script hdfs start namenode
   # $HADOOP_PREFIX/sbin/yarn-daemon.sh start resourcemanager
   # $HADOOP_PREFIX/sbin/yarn-daemons.sh start nodemanager
-	sudo nohup socat TCP-LISTEN:8081,fork TCP:${LOCAL_IP}:8080 > /dev/null 2>&1 &
-	sudo nohup socat TCP-LISTEN:4041,fork TCP:${LOCAL_IP}:4040 > /dev/null 2>&1 &
-  sudo nohup socat TCP-LISTEN:7078,fork TCP:${LOCAL_IP}:7077 > /dev/null 2>&1 &
+	# sudo nohup socat TCP-LISTEN:8081,fork TCP:${LOCAL_IP}:8080 > /dev/null 2>&1 &
+	# sudo nohup socat TCP-LISTEN:4041,fork TCP:${LOCAL_IP}:4040 > /dev/null 2>&1 &
+    # sudo nohup socat TCP-LISTEN:7078,fork TCP:${LOCAL_IP}:7077 > /dev/null 2>&1 &
 elif [ "$duty" = "s" ]; then
 	bash /usr/local/spark/sbin/start-slave.sh $master_ip:7077
-	sudo nohup socat TCP-LISTEN:8082,fork TCP:${LOCAL_IP}:8081 > /dev/null 2>&1 &	
-  $HADOOP_PREFIX/sbin/hadoop-daemons.sh --script hdfs start datanode
-  $HADOOP_PREFIX/sbin/yarn-daemons.sh start nodemanager
+	# sudo nohup socat TCP-LISTEN:8082,fork TCP:${LOCAL_IP}:8081 > /dev/null 2>&1 &	
+    $HADOOP_PREFIX/sbin/hadoop-daemons.sh --script hdfs start datanode
+    $HADOOP_PREFIX/sbin/yarn-daemons.sh start nodemanager
 fi
 
 

@@ -104,24 +104,24 @@ if [ "$duty" = "m" ]; then
   $HADOOP_PREFIX/sbin/hadoop-daemon.sh --script hdfs start namenode
   # $HADOOP_PREFIX/sbin/yarn-daemon.sh start resourcemanager
   # $HADOOP_PREFIX/sbin/yarn-daemons.sh start nodemanager
-	sudo nohup socat TCP-LISTEN:8081,fork TCP:${LOCAL_IP}:8080 > /dev/null 2>&1 &
-	sudo nohup socat TCP-LISTEN:4041,fork TCP:${LOCAL_IP}:4040 > /dev/null 2>&1 &
-  sudo nohup socat TCP-LISTEN:8089,fork TCP:${LOCAL_IP}:8088 > /dev/null 2>&1 &
+	# sudo nohup socat TCP-LISTEN:8081,fork TCP:${LOCAL_IP}:8080 > /dev/null 2>&1 &
+	# sudo nohup socat TCP-LISTEN:4041,fork TCP:${LOCAL_IP}:4040 > /dev/null 2>&1 &
+ #    sudo nohup socat TCP-LISTEN:8089,fork TCP:${LOCAL_IP}:8088 > /dev/null 2>&1 &
 	sudo nohup docker run --init -p 3000:3000 -v "/:/home/project:cached" theiaide/theia-python:next > /dev/null 2>&1 &
-	sudo nohup jupyter notebook --no-browser --allow-root --ip 0.0.0.0 --notebook-dir=/ > /dev/null 2>&1 &
+	sudo nohup jupyter notebook --no-browser --allow-root --ip localhost --notebook-dir=/ > /dev/null 2>&1 &
 
 
 elif [ "$duty" = "s" ]; then
-	sudo bash /usr/local/spark/sbin/start-slave.sh $master_ip:7077
-	sudo nohup socat TCP-LISTEN:8082,fork TCP:${LOCAL_IP}:8081 > /dev/null 2>&1 &	
-  $HADOOP_PREFIX/sbin/hadoop-daemons.sh --script hdfs start datanode
-  $HADOOP_PREFIX/sbin/yarn-daemons.sh start nodemanager
+    sudo bash /usr/local/spark/sbin/start-slave.sh $master_ip:7077
+	# sudo nohup socat TCP-LISTEN:8082,fork TCP:${LOCAL_IP}:8081 > /dev/null 2>&1 &	
+    $HADOOP_PREFIX/sbin/hadoop-daemons.sh --script hdfs start datanode
+    $HADOOP_PREFIX/sbin/yarn-daemons.sh start nodemanager
 fi
 echo "Bootstraping complete"
 
 
 
-sudo nohup socat TCP-LISTEN:8083,fork TCP:${LOCAL_IP}:8082 > /dev/null 2>&1 &
+# sudo nohup socat TCP-LISTEN:8083,fork TCP:${LOCAL_IP}:8082 > /dev/null 2>&1 &
 
 
 
